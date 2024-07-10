@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         title: 'Band names',
         initialRoute: 'home_page',
         routes: {
-          'home_page': (_) => const HomePage(title: 'Soquete'),
+          'home_page': (_) => const HomePage(title: 'Soquetee'),
           'status_page': (_) => const StatusPage(),
         },
       ),
