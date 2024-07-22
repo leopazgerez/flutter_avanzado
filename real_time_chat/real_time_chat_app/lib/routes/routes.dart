@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../pages/chat_page.dart';
-import '../pages/log_in_page.dart';
-import '../pages/sign_up_page.dart';
-import '../pages/splash_page.dart';
-import '../pages/user_page.dart';
+import '../ui/pages/chat_page.dart';
+import '../ui/pages/log_in_page.dart';
+import '../ui/pages/sign_up_page.dart';
+import '../ui/pages/splash_page.dart';
+import '../ui/pages/user_page.dart';
 
 final Map<String, Widget Function(BuildContext)> routes = {
   'userPage': (_) => const UserPage(),
