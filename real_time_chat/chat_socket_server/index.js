@@ -24,10 +24,9 @@ const publicPath = path.resolve(__dirname, 'public');
 app.use(express.static(publicPath));
 
 //Rutas
+app.use('/api/signin', require('./routes/auth'));
 app.use('/api/login', require('./routes/auth'));
-// app.use('/api/rooms', require('./routes/room'));
 // app.use('/api/messages', require('./routes/message'));
-
 
 
 

@@ -32,6 +32,45 @@ const createUser = async (request, res = response) => {
     }
 };
 
+const login = async (request, res = response) => {
+    try {
+        let token;
+        let user;
+        const { email, password } = request.body;
+        const userModel = await UserModel.findOne({ email });
+        if (userModel) {
+            const isMatch = bcrypt.compareSync(password, userModel.password);
+            if (isMatch) {
+                user = UserModel(request.body);
+                token = await generateJWT(user._id);
+            }
+            else {
+                return res.status(401).json({
+                    ok: false,
+                    msg: 'Wrong password'
+                });
+            }
+        } else {
+            return res.status(401).json({
+                ok: false,
+                msg: 'User not found'
+            });
+        }
+        res.json({
+            ok: true,
+            user,
+            token
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado... revisar logs'
+        });
+    }
+};
+
 module.exports = {
-    createUser
+    createUser,
+    login
 }
