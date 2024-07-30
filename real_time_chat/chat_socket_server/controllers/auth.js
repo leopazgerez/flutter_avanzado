@@ -70,7 +70,20 @@ const login = async (request, res = response) => {
     }
 };
 
+const renewToken = async (request, res = response) => {
+    try {
+        res.json({ ok: true, msg: 'renewToken' });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado... revisar logs'
+        });
+    }
+};
+
 module.exports = {
     createUser,
-    login
+    login,
+    renewToken
 }
