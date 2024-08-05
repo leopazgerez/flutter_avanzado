@@ -72,7 +72,23 @@ const login = async (request, res = response) => {
 
 const renewToken = async (request, res = response) => {
     try {
-        res.json({ ok: true, msg: 'renewToken' });
+        // Renuevo el token por detras  y solo devuelvo el usuario que corresponde
+        const uid = request.uid;
+        const token = await generateJWT(uid);
+        const user = await UserModel.findById(uid);
+        if (!user) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'User not found'
+            });
+        } else {
+            res.json({
+                ok: true,
+                msg: 'token renewed',
+                user,
+                token,
+            });
+        }
     } catch (error) {
         console.log(error)
         res.status(500).json({
