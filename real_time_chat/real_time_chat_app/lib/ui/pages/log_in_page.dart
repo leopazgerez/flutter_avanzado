@@ -1,4 +1,6 @@
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
 
 class LogInPage extends StatefulWidget {
   const LogInPage({super.key});
@@ -11,16 +13,18 @@ class _LogInPageState extends State<LogInPage> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _emailController = TextEditingController();
-    _passwordController  = TextEditingController();
+    _passwordController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return SafeArea(
         child: Scaffold(
       body: Padding(
@@ -39,11 +43,18 @@ class _LogInPageState extends State<LogInPage> {
                 height: 24,
               ),
               ElevatedButton(
-                onPressed: () {
-                  if (_key.currentState?.validate() ?? false) {}
+                onPressed: () async {
+                  await authService
+                      .login(_emailController.text, _passwordController.text)
+                      .then((value) {
+                    if (value) {
+                      Navigator.pushReplacementNamed(context, 'userPage');
+                    }
+                  });
+                  // Navigate to home page after successful login
                 },
                 child: const Text(
-                  'Log In',
+                  'Iniciar sesion',
                   style: TextStyle(
                     color: Colors.blue,
                   ),
@@ -81,50 +92,54 @@ class _LogInPageState extends State<LogInPage> {
 
   Widget _form() {
     return Form(
-        child: Column(
-      children: [
-        TextFormField(
-            decoration: const InputDecoration(
-                labelText: 'Email',
-                floatingLabelBehavior: FloatingLabelBehavior.never),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              }
-              // validate user email
-              bool emailValid = RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                  .hasMatch(value);
-              if (!emailValid) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            }),
-        const SizedBox(
-          height: 16,
-        ),
-        TextFormField(
-            decoration: const InputDecoration(
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              labelText: 'Password',
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
+      child: Column(
+        children: [
+          TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                  labelText: 'Email',
+                  floatingLabelBehavior: FloatingLabelBehavior.never),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                // validate user email
+                bool emailValid = RegExp(
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                    .hasMatch(value);
+                if (!emailValid) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              }),
+          const SizedBox(
+            height: 16,
+          ),
+          TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                labelText: 'Password',
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
 
-              if (value.length < 6) {
-                return 'Password must be at least 6 characters';
-              }
-              return null;
-            }),
-        const SizedBox(
-          height: 16,
-        ),
-      ],
-    ),);
+                if (value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
+                return null;
+              }),
+          const SizedBox(
+            height: 16,
+          ),
+        ],
+      ),
+    );
   }
-  Widget _register(){
+
+  Widget _register() {
     return Column(
       children: [
         Text(
@@ -139,7 +154,7 @@ class _LogInPageState extends State<LogInPage> {
         ),
         TextButton(
           onPressed: () {
-           Navigator.pushReplacementNamed(context,'signUpPage');
+            Navigator.pushReplacementNamed(context, 'signUpPage');
           },
           child: const Text(
             'Crea una cuenta',

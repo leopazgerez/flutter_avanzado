@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -24,6 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return SafeArea(
         child: Scaffold(
       body: Padding(
@@ -42,11 +46,19 @@ class _SignUpPageState extends State<SignUpPage> {
                 height: 24,
               ),
               ElevatedButton(
-                onPressed: () {
-                  if (_key.currentState?.validate() ?? false) {}
+                onPressed: () async {
+                  await authService
+                      .signIn(_nameController.text, _emailController.text,
+                          _passwordController.text)
+                      .then((value) {
+                    if (value) {
+                      Navigator.pushReplacementNamed(context, 'userPage');
+                    }
+                  });
+                  // Navigate to home page after successful login
                 },
                 child: const Text(
-                  'Log In',
+                  'Registrarse',
                   style: TextStyle(
                     color: Colors.blue,
                   ),
@@ -71,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
           height: 8,
         ),
         Text(
-          'Sign Up',
+          'Registro',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -86,6 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
       child: Column(
         children: [
           TextFormField(
+              controller: _emailController,
               decoration: const InputDecoration(
                   labelText: 'Email',
                   floatingLabelBehavior: FloatingLabelBehavior.never),
@@ -106,11 +119,12 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 16,
           ),
           TextFormField(
+              controller: _passwordController,
               decoration: const InputDecoration(
                   labelText: 'Nombre',
                   floatingLabelBehavior: FloatingLabelBehavior.never),
               validator: (value) {
-                if(value == null || value.isEmpty){
+                if (value == null || value.isEmpty) {
                   return 'Por favor ingrese un nombre';
                 }
                 return null;
@@ -119,6 +133,7 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 16,
           ),
           TextFormField(
+              controller: _nameController,
               decoration: const InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 labelText: 'Password',

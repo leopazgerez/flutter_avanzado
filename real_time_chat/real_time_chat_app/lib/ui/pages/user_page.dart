@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:real_time_chat_app/services/auth_service.dart';
 
 import '../../models/user_model.dart';
 
@@ -14,11 +16,11 @@ class _UserPageState extends State<UserPage> {
   late final RefreshController _refreshController;
 
   final userModels = [
-    UserModel(uid: '1', nombre: 'María', email: 'test1@test.com', online: true),
+    UserModel(uid: '1', name: 'María', email: 'test1@test.com', online: true),
     UserModel(
-        uid: '2', nombre: 'Melissa', email: 'test2@test.com', online: false),
+        uid: '2', name: 'Melissa', email: 'test2@test.com', online: false),
     UserModel(
-        uid: '3', nombre: 'Fernando', email: 'test3@test.com', online: true),
+        uid: '3', name: 'Fernando', email: 'test3@test.com', online: true),
   ];
 
   @override
@@ -30,14 +32,18 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Scaffold(
         appBar: AppBar(
-          title:const Text('Mi Nombre', style: TextStyle(color: Colors.black87)),
+          title:const Text('Mi nombre', style: TextStyle(color: Colors.black87)),
           elevation: 1,
           backgroundColor: Colors.white,
           leading: IconButton(
             icon: Icon(Icons.exit_to_app, color: Colors.black87),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, 'logInPage');
+              AuthService.deleteToken();
+            },
           ),
           actions: <Widget>[
             Container(
@@ -69,10 +75,10 @@ class _UserPageState extends State<UserPage> {
 
   ListTile _userModelListTile(UserModel userModel) {
     return ListTile(
-      title: Text(userModel.nombre!),
+      title: Text(userModel.name!),
       subtitle: Text(userModel.email!),
       leading: CircleAvatar(
-        child: Text(userModel.nombre!.substring(0, 2)),
+        child: Text(userModel.name!.substring(0, 2)),
         backgroundColor: Colors.blue[100],
       ),
       trailing: Container(
